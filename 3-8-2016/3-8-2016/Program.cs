@@ -32,6 +32,12 @@ public interface IMechaPilot
 		get;
 		set;
 	}
+	int Defense
+	{
+		get;
+		set;
+	}
+
 	void ItsAnAngel(IMonster angel);
 }
 
@@ -50,13 +56,15 @@ public class Protagonist : IStudent, IMechaPilot
 	private int iGrade;
 	private string ArmorName;
 	private int iPower;
+	private int iGuard;
 	
-	public Protagonist(string Class, int iLevel, string Name, int iStrength)
+	public Protagonist(string Class, int iLevel, string Name, int iStrength, int iShield)
 	{
-		Class = Uni;
-		iLevel = iGrade;
-		Name = ArmorName;
-		iStrength = iPower;
+		Uni = Class;
+		iGrade = iLevel;
+		ArmorName = Name;
+		iPower = iStrength;
+		iGuard = iShield;
 	}
 
 	public string School
@@ -67,7 +75,7 @@ public class Protagonist : IStudent, IMechaPilot
 		}
 		set
 		{
-			Uni = "A School";
+			Uni = value;
 		}
 	}
 
@@ -107,64 +115,81 @@ public class Protagonist : IStudent, IMechaPilot
 		}
 	}
 
-	public void SenpaiRadar(IStudent Hm)
+	public int Defense
 	{
-		if (Hm.School == this.Uni && Hm.Year > this.iGrade)
+		get
 		{
-			Console.WriteLine("Senpai doesn't notice the protagonist... Senpai never will.");
+			return iGuard;
 		}
-		else if (Hm.School == this.Uni && Hm.Year <= this.iGrade || Hm.School != this.School && Hm.Year <= this.iGrade)
+		set
 		{
-			Console.WriteLine("That isn't Senpai! That's an imposter!");
+			iGuard = value;
 		}
-		else if(Hm.School != this.Uni && Hm.Year > this.iGrade)
+	}
+
+	public void SenpaiRadar(IStudent senpai)
+	{
+		if (senpai.School == this.Uni && senpai.Year > this.iGrade)
 		{
-			Console.WriteLine("Senpai noticed the protagonist, but just doesn't care.");
+			Console.WriteLine("Senpai doesn't notice the protagonist... Senpai never will. \n");
+		}
+		else if (senpai.School == this.Uni && senpai.Year <= this.iGrade || senpai.School != this.Uni && senpai.Year <= this.iGrade)
+		{
+			Console.WriteLine("That isn't Senpai! That's an imposter! \n");
+		}
+		else if (senpai.School != this.Uni && senpai.Year > this.iGrade)
+		{
+			Console.WriteLine("Senpai noticed the protagonist, but just doesn't care. \n");
 		}
 	}
 
 	public void ItsAnAngel(IMonster Sadness)
 	{
-		if(Sadness.Level > 1/3 * iPower)
+		if(Sadness.Level > 4/3 * this.iGuard)
 		{
-
+			Console.WriteLine(this.MechName + " was lost in Battle. \n");
+		}
+		else
+		{
+			Console.WriteLine(this.MechName + " fights on! \n");
+		}
+		if (Sadness.Level > 5 / 4 * this.iPower)
+		{
+			Console.WriteLine(this.MechName + " attacks did nothing!");
+		}
+		else
+		{
+			Console.WriteLine(this.MechName + " defeated the monster! :D");
 		}
 	}
 }
 
 public class SadTwist : IStudent, IMonster
 {
-	private string Uni;
-	private int iGrade;
+	private string Univ;
+	private int iGrades;
 	private int iTier;
-
-	public SadTwist(string Class, int iYear, int iRank)
-	{
-		Class = Uni;
-		iYear = iGrade;
-		iRank = iTier;
-	}
 
 	public string School
 	{
 		get
 		{
-			return Uni;
+			return Univ;
 		}
 		set
 		{
-			Uni = "A School";
+			Univ = "A School";
 		}
 	}
 	public int Year
 	{
 		get
 		{
-			return iGrade;
+			return iGrades;
 		}
 		set
 		{
-			iGrade = value;
+			iGrades = value;
 		}
 	}
 	public int Level
@@ -178,10 +203,27 @@ public class SadTwist : IStudent, IMonster
 			iTier = value;
 		}
 	}
-
+	public SadTwist(string Class, int iYear, int iRank)
+	{
+		Univ = Class;
+		iGrades = iYear;
+		iTier = iRank;
+	}
 	public void SenpaiRadar(IStudent senpai)
 	{
-		throw new NotImplementedException("I don't think Ineed this here.");
+		throw new NotImplementedException();
 	}
 }
 
+class Program
+{
+	static void Main(string[] args)
+	{
+		Protagonist sitsByWindow = new Protagonist("Temp", 2, "Mecha", 25, 20);
+		SadTwist childFriend = new SadTwist("Temp", 3, 20);
+
+		sitsByWindow.SenpaiRadar(childFriend);
+		sitsByWindow.ItsAnAngel(childFriend);
+		Console.ReadLine();
+	}
+}
